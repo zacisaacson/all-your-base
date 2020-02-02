@@ -23,4 +23,28 @@ router.post('/', (request, response) => {
     })
 });
 
+router.get('/', (request, response) => {
+  database('users').where('api_key', request.body.api_key).first()
+  .then(user => {
+    if (user) {
+      database('favorites').where({user_id: user.id})
+        .then(favorites => {
+          const allFavorites = favorites.map(location => {
+            return fetch(`https://maps.googleapis.com/maps/api/geocode/json?address=${location.location}&key=${process.env.GOOGLE_API_KEY}`)
+              .then(response => response.json())
+              .then(locationInfo => {
+                let latLong = locationInfo.results[0].geometry.location;
+                let darkskyApiKey = process.env.DARK_SKY_API;
+                return fetch(`https://api.darksky.net/forecast/${darkskyApiKey}/${latLong.lat},${latLong.lng}`)
+                  .then(response => response.json())
+                  .then(json => new Forecast(location.location, json).allFavorites())
+              })
+              return location
+          })
+        Promise.all(allFavorites)
+          .then(finalResponse => response.status(200).json(finalResponse))
+      })
+    }
+  })
+})
   module.exports = router;
