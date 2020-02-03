@@ -15,6 +15,13 @@ class Forecast {
     }
   }
 
+  allFavorites() {
+    return {
+      location: this.location,
+      current_weather: this.currently
+    }
+  }
+
   currentWeather(data) {
     return {
       summary: data.summary,
@@ -34,23 +41,23 @@ class Forecast {
 
   hourlyForecast(data) {
     return {
-      summary: data.icon,
+      summary: data.summary,
       icon: data.icon,
-      data: data.data.slice(0, 8).map(hour => {
+      data: data.data.slice(0, 8).map(hourly => {
         return {
-          time: hour.time,
-          summary: hour.summary,
-          icon: hour.icon,
-          precipIntensity: hour.precipIntensity,
-          precipProbability: hour.precipProbability,
-          temperature: hour.temperature,
-          humidity: hour.humidity,
-          pressure: hour.pressure,
-          windSpeed: hour.windSpeed,
-          windGust: hour.windGust,
-          windBearing: hour.windBearing,
-          cloudCover: hour.cloudCover,
-          visibility: hour.visibility
+          time: hourly.time,
+          summary: hourly.summary,
+          icon: hourly.icon,
+          precipIntensity: hourly.precipIntensity,
+          precipProbability: hourly.precipProbability,
+          temperature: hourly.temperature,
+          humidity: hourly.humidity,
+          pressure: hourly.pressure,
+          windSpeed: hourly.windSpeed,
+          windGust: hourly.windGust,
+          windBearing: hourly.windBearing,
+          cloudCover: hourly.cloudCover,
+          visibility: hourly.visibility
         }
       })
     }
@@ -60,28 +67,28 @@ class Forecast {
     return {
       summary: data.summary,
       icon: data.icon,
-      data: data.data.map(day => {
+      data: data.data.map(daily => {
         return {
-          time: day.time,
-          summary: day.summary,
-          icon: day.icon,
-          sunriseTime: day.sunriseTime,
-          sunsetTime: day.sunsetTime,
-          precipIntensity: day.precipIntensity,
-          precipIntensityMax: day.precipIntensityMax,
-          precipIntensityMaxTime: day.precipIntensityMaxTime,
-          precipProbability: day.precipProbability,
-          precipType: day.precipType,
-          temperatureHigh: day.temperatureHigh,
-          temperatureLow: day.temperatureLow,
-          humidity: day.humidity,
-          pressure: day.pressure,
-          windSpeed: day.windSpeed,
-          windGust: day.windGust,
-          cloudCover: day.cloudCover,
-          visibility: day.visibility,
-          temperatureMin: day.temperatureMin,
-          temperatureMax: day.temperatureMax
+          time: daily.time,
+          summary: daily.summary,
+          icon: daily.icon,
+          sunriseTime: daily.sunriseTime,
+          sunsetTime: daily.sunsetTime,
+          precipIntensity: daily.precipIntensity,
+          precipIntensityMax: daily.precipIntensityMax,
+          precipIntensityMaxTime: daily.precipIntensityMaxTime,
+          precipProbability: daily.precipProbability,
+          precipType: daily.precipType,
+          temperatureHigh: daily.temperatureHigh,
+          temperatureLow: daily.temperatureLow,
+          humidity: daily.humidity,
+          pressure: daily.pressure,
+          windSpeed: daily.windSpeed,
+          windGust: daily.windGust,
+          cloudCover: daily.cloudCover,
+          visibility: daily.visibility,
+          temperatureMin: daily.temperatureMin,
+          temperatureMax: daily.temperatureMax
         }
       })
     }
