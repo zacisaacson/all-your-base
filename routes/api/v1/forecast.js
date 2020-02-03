@@ -23,9 +23,9 @@ router.get('/', (request, response) => {
         fetch(`https://maps.googleapis.com/maps/api/geocode/json?address=${location}&key=${googleApiKey}`)
           .then(response => response.json())
           .then(locationInfo => {
-            let latLong = locationInfo.results[0].geometry.location;
+            const {lat,lng} = locationInfo.results[0].geometry.location;
             let darkskyApiKey = process.env.DARK_SKY_API;
-            fetch(`https://api.darksky.net/forecast/${darkskyApiKey}/${latLong.lat},${latLong.lng}`)
+            fetch(`https://api.darksky.net/forecast/${darkskyApiKey}/${lat},${lng}`)
               .then(response => response.json())
               .then(json => response.status(200).json((new Forecast(location, json)).fullForecast()))
               .catch(error => {
