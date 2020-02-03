@@ -44,7 +44,22 @@ router.get('/', (request, response) => {
         Promise.all(allFavorites)
           .then(finalResponse => response.status(200).json(finalResponse))
       })
+router.delete('/', (request, response) => {
+  let location = request.body.location
+  database('users').where('api_key', request.body.api_key).first()
+  .then(user => {
+    if (user) {
+      if (location) {
+         database('favorites').del().where({user_id: user.id, location: location})
+       .then(status => {
+         if (status === 1) {
+           response.status(200).json({success: `${request.body.location} has been deleted from your favorites.`})
+         }
+       })
+      }
     }
   })
+  // .then(favorite => console.log(favorite))
 })
+
   module.exports = router;
