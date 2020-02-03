@@ -43,12 +43,27 @@ router.get('/', (request, response) => {
                 return fetch(`https://api.darksky.net/forecast/${darkskyApiKey}/${latLong.lat},${latLong.lng}`)
                   .then(response => response.json())
                   .then(json => new Forecast(location.location, json).allFavorites())
+                  .catch(error => {
+                    response.status(500).json(error)
+                  })
+              })
+              .catch(error => {
+                response.status(500).json(error)
               })
               return location
           })
         Promise.all(allFavorites)
           .then(finalResponse => response.status(200).json(finalResponse))
       })
+      .catch(error => {
+        response.status(500).json(error)
+      })
+    } else {
+        response.status(403).json("Unknown User");
+      }
+  })
+})
+
 router.delete('/', (request, response) => {
   let location = request.body.location
   database('users').where('api_key', request.body.api_key).first()
