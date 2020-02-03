@@ -9,6 +9,9 @@ const configuration = require('../../../knexfile')[environment];
 const database = require('knex')(configuration);
 
 router.post('/', (request, response) => {
+  if (!request.body.location) {
+    return response.status(500).json("Please pass in location")
+  }
     database('users').where('api_key', request.body.api_key).first()
     .then (user => {
       if (user) {
@@ -16,10 +19,12 @@ router.post('/', (request, response) => {
         .then(favorite => {
           response.status(201).json({success: `${request.body.location} has been added to your favorites.` })
         })
-        // .catch(error => {
-        //   response.status(500).json({ error });
-        // });
-      }
+        .catch(error => {
+          response.status(500).json("Unable to add favorite");
+        });
+      } else {
+          response.status(403).json("Unknown User");
+        }
     })
 });
 
