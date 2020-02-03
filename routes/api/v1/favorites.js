@@ -12,6 +12,9 @@ router.post('/', (request, response) => {
   if (!request.body.location) {
     return response.status(500).json("Please pass in location")
   }
+  if (!request.body.api_key) {
+    return response.status(401).json("Unauthorized")
+  }
     database('users').where('api_key', request.body.api_key).first()
     .then (user => {
       if (user) {
@@ -29,6 +32,9 @@ router.post('/', (request, response) => {
 });
 
 router.get('/', (request, response) => {
+  if (!request.body.api_key) {
+    return response.status(401).json("Unauthorized")
+  }
   database('users').where('api_key', request.body.api_key).first()
   .then(user => {
     if (user) {
@@ -65,6 +71,9 @@ router.get('/', (request, response) => {
 })
 
 router.delete('/', (request, response) => {
+  if (!request.body.api_key) {
+    return response.status(401).json("Unauthorized")
+  }
   let location = request.body.location
   database('users').where('api_key', request.body.api_key).first()
   .then(user => {
@@ -79,7 +88,6 @@ router.delete('/', (request, response) => {
       }
     }
   })
-  // .then(favorite => console.log(favorite))
 })
 
   module.exports = router;

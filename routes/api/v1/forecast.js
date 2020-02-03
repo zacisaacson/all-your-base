@@ -10,8 +10,7 @@ const database = require('knex')(configuration);
 
 
 router.get('/', (request, response) => {
-  let googleApiKey = process.env.GOOGLE_API_KEY;
-  if (!googleApiKey) {
+  if (!request.body.api_key) {
     return response.status(401).json("Unauthorized")
   }
   database('users').where('api_key', request.body.api_key).first()
@@ -19,6 +18,7 @@ router.get('/', (request, response) => {
     if (user === null) {
       response.status(403).json("Unknown User");
     } else {
+        let googleApiKey = process.env.GOOGLE_API_KEY;
         let location = request.query.location;
         fetch(`https://maps.googleapis.com/maps/api/geocode/json?address=${location}&key=${googleApiKey}`)
           .then(response => response.json())
