@@ -10,13 +10,16 @@ const database = require('knex')(configuration);
 
 
 router.get('/', (request, response) => {
+  let googleApiKey = process.env.GOOGLE_API_KEY;
+  if (!googleApiKey) {
+    return response.status(401).json("Unauthorized")
+  }
   database('users').where('api_key', request.body.api_key).first()
   .then (user => {
     if (user === null) {
-      response.status(403).send("Unknown User");
+      response.status(403).json("Unknown User");
     } else {
         let location = request.query.location;
-        let googleApiKey = process.env.GOOGLE_API_KEY;
         fetch(`https://maps.googleapis.com/maps/api/geocode/json?address=${location}&key=${googleApiKey}`)
           .then(response => response.json())
           .then(locationInfo => {
@@ -25,6 +28,12 @@ router.get('/', (request, response) => {
             fetch(`https://api.darksky.net/forecast/${darkskyApiKey}/${latLong.lat},${latLong.lng}`)
               .then(response => response.json())
               .then(json => response.status(200).json((new Forecast(location, json)).fullForecast()))
+              .catch(error => {
+                response.status(500).json(error)
+              })
+          })
+          .catch(error => {
+            response.status(500).json(error)
           })
       }
   });
